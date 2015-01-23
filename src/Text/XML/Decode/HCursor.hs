@@ -41,15 +41,16 @@ module Text.XML.Decode.HCursor
   , (&//)
   ) where
 
-import Prelude ()
-import BasePrelude hiding (shift,(>=>),(***),(|||))
+import           BasePrelude        hiding (shift, (***), (>=>), (|||))
+import           Prelude            ()
 
-import Control.Lens ((^.),(&),to,makeLenses,makePrisms,over)
-import Data.List.NonEmpty (NonEmpty(..))
+import           Control.Lens       (makeLenses, makePrisms, over, to, (&),
+                                     (^.))
+import           Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NEL
-import Data.Text (Text)
-import qualified Text.XML.Cursor as C
-import qualified Text.XML as X
+import           Data.Text          (Text)
+import qualified Text.XML           as X
+import qualified Text.XML.Cursor    as C
 
 data CursorAxis = Child | Descendant deriving (Show,Eq)
 makePrisms ''CursorAxis

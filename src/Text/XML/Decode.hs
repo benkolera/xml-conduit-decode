@@ -1,4 +1,5 @@
-{-# LANGUAGE TupleSections, OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TupleSections     #-}
 
 module Text.XML.Decode
   ( DecodeCursor
@@ -16,17 +17,24 @@ module Text.XML.Decode
   , decodeAttr
   , decodeAttrMay
   , foldCursor
-  , parseBool
-  , parseDouble
-  , parseInt
-  , parseInteger
   , HCursor
-  , CursorOp
+  , CursorOp(..)
   , CursorAxis(..)
   , fromCursor
   , fromDocument
   , failedCursor
   , successfulCursor
+  -- Parser Helpers
+  , parseCursor
+  , parseMaybe
+  , parseText
+  , parseInt
+  , parseInteger
+  , parseDouble
+  , parseBool
+  , parseIsoUtcTime
+  , parseIsoDay
+  , parseXmlTime
   -- HCursor Lenses / Prisms
   , cursors
   , history
@@ -50,9 +58,14 @@ module Text.XML.Decode
   , ($//)
   , (&/)
   , (&//)
+  -- Dates
+  , IsoUTCTime(..)
+  , IsoDay(..)
+  , isoUTCTimeFormat
+  , isoDayFormat
   ) where
 
-import Text.XML.Decode.DecodeCursor
-import Text.XML.Decode.Time
-import Text.XML.Decode.Parsers
-import Text.XML.Decode.HCursor
+import           Text.XML.Decode.DecodeCursor
+import           Text.XML.Decode.HCursor
+import           Text.XML.Decode.Parsers
+import           Text.XML.Decode.Time

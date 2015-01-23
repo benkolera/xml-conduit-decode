@@ -39,6 +39,7 @@ test-suite test
                      , base-prelude
                      , data-default
                      , lens
+                     , system-filepath
                      , text
                      , tasty
                      , tasty-hunit

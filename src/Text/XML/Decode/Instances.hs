@@ -1,13 +1,14 @@
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 module Text.XML.Decode.Instances where
 
-import BasePrelude
-import Prelude     ()
+import           BasePrelude
+import           Prelude                      ()
 
-import Data.Text (Text)
+import           Data.Text                    (Text)
 
-import Text.XML.Decode.DecodeCursor
-import Text.XML.Decode.Parsers
-import Text.XML.Decode.Time
+import           Text.XML.Decode.DecodeCursor
+import           Text.XML.Decode.Parsers
+import           Text.XML.Decode.Time
 
 instance DecodeCursor Text where decode = fmap fold . cursorContents
 instance DecodeCursor Int where decode = parseCursor parseInt

@@ -1,14 +1,27 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Text.XML.Decode.Parsers where
+module Text.XML.Decode.Parsers
+ ( parseText
+ , parseMaybe
+ , parseInt
+ , parseInteger
+ , parseDouble
+ , parseBool
+ , parseXmlTime
+ , parseIsoUtcTime
+ , parseIsoDay
+ )where
 
-import BasePrelude hiding (toLower)
-import Prelude     ()
+import           BasePrelude          hiding (toLower)
+import           Prelude              ()
 
-import Data.Text     (Text, toLower, unpack)
-import Data.Time     (ParseTime, parseTime)
-import System.Locale (defaultTimeLocale)
+import           Data.Text            (Text, toLower, unpack)
+import           Data.Time            (ParseTime, parseTime)
+import           System.Locale        (defaultTimeLocale)
 
-import Text.XML.Decode.Time
+import           Text.XML.Decode.Time
+
+parseText :: Text -> Either Text Text
+parseText = Right
 
 parseMaybe :: Text -> (Text -> Maybe a) -> Text -> Either Text a
 parseMaybe desc f t = maybe (Left (fold ["'",t, "' was not ",desc])) Right (f t)
