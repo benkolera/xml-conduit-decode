@@ -1,0 +1,17 @@
+<library>
+  <book id="1">
+    <name>Learn you a haskell for great good!</name>
+    <published>2011-04-21</published>
+    <lastBorrowed>2015-01-05T16:30:00Z</lastBorrowed>
+    <category>Programming</category>
+    <category>Haskell</category>
+    <category>Functional Programming</category>
+  </book>
+  <book id="2">
+    <name>Enterprise Pragmatic Scala</name>
+    <published>2013-05-01</published>
+    <category>Programming</category>
+    <category>Scala</category>
+    <category>Functional Programming</category>
+  </book>
+</library>

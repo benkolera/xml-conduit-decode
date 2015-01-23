@@ -1,0 +1,58 @@
+{-# LANGUAGE TupleSections, OverloadedStrings #-}
+
+module Text.XML.Decode
+  ( DecodeCursor
+  , CursorHistory
+  , DecodeResult
+  , Predicate(..)
+  , Shift
+  , decode
+  , decodeDocument
+  , decodeSingle
+  , decodeDefault
+  , decodeMay
+  , decodeMany
+  , decodeNel
+  , decodeAttr
+  , decodeAttrMay
+  , foldCursor
+  , parseBool
+  , parseDouble
+  , parseInt
+  , parseInteger
+  , HCursor
+  , CursorOp
+  , CursorAxis(..)
+  , fromCursor
+  , fromDocument
+  , failedCursor
+  , successfulCursor
+  -- HCursor Lenses / Prisms
+  , cursors
+  , history
+  , _Child
+  , _Descendant
+  , _ChoiceSucceed
+  , _ChoiceSwitch
+  , _GenericOp
+  , _MoveAxis
+  , _LaxElement
+  , _FailedCompose
+  -- Shifts
+  , laxElement
+  , shiftGeneric
+  , filterPred
+  , (|||)
+  , (***)
+  , (%/)
+  , (%//)
+  , ($/)
+  , ($//)
+  , (&/)
+  , (&//)
+  ) where
+
+import Text.XML.Decode.DecodeCursor
+import Text.XML.Decode.Time
+import Text.XML.Decode.Parsers
+import Text.XML.Decode.HCursor
