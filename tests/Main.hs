@@ -127,9 +127,6 @@ decodeBadChoice = do
           [ MoveAxis Child , LaxElement "non_fiction" ]
           []]])
 
--- I don't really like this. It'd be better if the switch was actually
--- down at where it branched. OK enough for now, I guess.
--- It'd be also nice if it weren't just a cons list.
 decodeFailedDecodeInsideChoice :: Assertion
 decodeFailedDecodeInsideChoice = do
   c <- fromDocument <$> loadXmlForTest "bad_decode_inside_choice"
