@@ -20,19 +20,19 @@ module Text.XML.Decode.DecodeCursor
   , cursorContents
   ) where
 
-import           BasePrelude             hiding (first)
-import           Prelude                 ()
+import BasePrelude hiding (first)
+import Prelude     ()
 
-import           Control.Lens            (makeLenses, (^.))
-import           Data.Bifunctor          (first)
-import           Data.List.NonEmpty      (NonEmpty (..))
-import qualified Data.List.NonEmpty      as NEL
-import           Data.Text               (Text)
-import qualified Data.Text               as T
-import           Text.XML                (Document)
-import qualified Text.XML.Cursor         as C
+import           Control.Lens       (makeLenses, (^.))
+import           Data.Bifunctor     (first)
+import           Data.List.NonEmpty (NonEmpty (..))
+import qualified Data.List.NonEmpty as NEL
+import           Data.Text          (Text)
+import qualified Data.Text          as T
+import           Text.XML           (Document)
+import qualified Text.XML.Cursor    as C
 
-import           Text.XML.Decode.HCursor
+import Text.XML.Decode.HCursor
 
 type DecodeResult a = Either (Text,CursorHistory) a
 
@@ -106,12 +106,15 @@ choice :: Shift -> (HCursor -> DecodeResult a) -> ChoiceDecoder a
 choice = ChoiceDecoder
 
 decodeChoice :: [ChoiceDecoder a] -> HCursor -> DecodeResult a
-decodeChoice []       hc = Left ("Failed to match choices",hc^.history)
-decodeChoice (cd:cds) hc = foldCursor aFail aWin (hc %/ (cd^.choiceDecoderShift))
+decodeChoice decoders (HCursor c h) =
+  first (\ (msg,bh) -> (msg,h ++ bh)) . step decoders $ HCursor c []
   where
-    aFail   ah = first (switchHistory ah) . decodeChoice cds $ hc
-    aWin cs ah = cd^.choiceDecoderDecode $ (HCursor (NEL.toList cs) [ChoiceSucceed ah])
-    switchHistory ah (msg,bh) = (msg,[ChoiceSwitch ah bh])
+    step []       hc = Left ("Failed to match choices",hc^.history)
+    step (cd:cds) hc = foldCursor aFail aWin (hc %/ (cd^.choiceDecoderShift))
+      where
+        aFail   ah = first (switchHistory ah) . step cds $ hc
+        aWin cs ah = cd^.choiceDecoderDecode $ (HCursor (NEL.toList cs) [ChoiceSucceed ah])
+        switchHistory ah (msg,bh) = (msg,[ChoiceSwitch ah bh])
 
 parseCursor :: (Text -> Either Text a) -> HCursor -> DecodeResult a
 parseCursor f hc  = (first (,hc ^. history) . f . fold =<<) . cursorContents $ hc

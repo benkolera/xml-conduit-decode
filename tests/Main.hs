@@ -2,20 +2,20 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Main where
 
-import           BasePrelude               hiding (readFile)
-import           Prelude                   ()
+import BasePrelude hiding (readFile)
+import Prelude     ()
 
-import           Control.Lens
-import           Data.Default              (def)
-import           Data.Text
-import           Data.Time
-import           Filesystem.Path.CurrentOS (fromText)
-import           Test.Tasty
-import           Test.Tasty.HUnit
-import           Text.XML                  (Document, readFile)
+import Control.Lens
+import Data.Default              (def)
+import Data.Text
+import Data.Time
+import Filesystem.Path.CurrentOS (fromText)
+import Test.Tasty
+import Test.Tasty.HUnit
+import Text.XML                  (Document, readFile)
 
-import           Text.XML.Decode
-import           Text.XML.Decode.Instances ()
+import Text.XML.Decode
+import Text.XML.Decode.Instances ()
 
 data BookCategory
   = Haskell
@@ -119,20 +119,13 @@ decodeBadChoice = do
   let r = (decodeSingle c :: DecodeResult Library)
   r @?= Left (
     "Failed to match choices"
-    , [ ChoiceSwitch
-      [ MoveAxis Child , LaxElement "book"
+    , [ MoveAxis Child , LaxElement "book"
       , MoveAxis Child , LaxElement "section"
-      , MoveAxis Child , LaxElement "fiction"
-      ]
-      [ ChoiceSwitch
-        [ MoveAxis Child , LaxElement "book"
-        , MoveAxis Child , LaxElement "section"
-        , MoveAxis Child , LaxElement "non_fiction"
-        ]
-        [ MoveAxis Child , LaxElement "book"
-        , MoveAxis Child , LaxElement "section"
-        ]
-      ]])
+      , ChoiceSwitch
+        [ MoveAxis Child , LaxElement "fiction" ]
+        [ ChoiceSwitch
+          [ MoveAxis Child , LaxElement "non_fiction" ]
+          []]])
 
 -- I don't really like this. It'd be better if the switch was actually
 -- down at where it branched. OK enough for now, I guess.
@@ -143,16 +136,12 @@ decodeFailedDecodeInsideChoice = do
   let r = (decodeSingle c :: DecodeResult Library)
   r @?= Left (
     "'This is not a dewey decimal' was not a double"
-    , [ ChoiceSwitch
-      [ MoveAxis Child , LaxElement "book"
+    , [ MoveAxis Child , LaxElement "book"
       , MoveAxis Child , LaxElement "section"
-      , MoveAxis Child , LaxElement "fiction"
-      ]
-      [ ChoiceSucceed
-        [ MoveAxis Child , LaxElement "book"
-        , MoveAxis Child , LaxElement "section"
-        , MoveAxis Child , LaxElement "non_fiction"
-        ]]])
+      , ChoiceSwitch
+        [ MoveAxis Child , LaxElement "fiction" ]
+        [ ChoiceSucceed
+          [ MoveAxis Child , LaxElement "non_fiction" ]]])
 
 loadXmlForTest :: Text -> IO Document
 loadXmlForTest tn = readFile def . fromText $ "tests/xml/" <> tn <> ".xml"
