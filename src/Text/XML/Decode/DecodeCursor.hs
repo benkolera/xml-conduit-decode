@@ -92,5 +92,26 @@ decodeAttrMay n f = decodeAttr n parse
     parse "" = Right Nothing
     parse t  = Just <$> f t
 
+data ChoiceDecoder a = ChoiceDecoder
+  { choiceDecoderShift  :: Shift
+  , choiceDecoderDecode :: (HCursor -> DecodeResult a)
+  }
+
+choice :: Shift -> (HCursor -> DecodeResult a) -> ChoiceDecoder a
+choice = ChoiceDecoder
+
+decodeChoice :: [ChoiceDecoder a] -> HCursor -> DecodeResult a
+decodeChoice cds c =
+  -- TODO: This isn't right. We want to fold through the choices
+  -- and collect up ChoiceSwitches as we fail to match the initial
+  -- shift of the choice. ||| isn't going to help us, but we can do
+  -- something very similiar.
+  maybe noMatch doDecode . find choiceSuccess . fmap shiftChoice $ cds
+  where
+    shiftChoice cd      = (cd,c %/ (choiceDecoderShift cd))
+    choiceSuccess (_,c) = successfulCursor c
+    noMatch             = _
+    doDecode            = _
+
 parseCursor :: (Text -> Either Text a) -> HCursor -> DecodeResult a
 parseCursor f hc  = (first (,hc ^. history) . f . fold =<<) . cursorContents $ hc
