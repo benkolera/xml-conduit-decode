@@ -118,14 +118,13 @@ decodeBadChoice = do
   c <- fromDocument <$> loadXmlForTest "bad_choice"
   let r = (decodeSingle c :: DecodeResult Library)
   r @?= Left (
-    "Failed to match choices"
+    "Choices Exhausted"
     , [ MoveAxis Child , LaxElement "book"
       , MoveAxis Child , LaxElement "section"
-      , ChoiceSwitch
-        [ MoveAxis Child , LaxElement "fiction" ]
-        [ ChoiceSwitch
-          [ MoveAxis Child , LaxElement "non_fiction" ]
-          []]])
+      , Choice
+        [ [ MoveAxis Child , LaxElement "fiction" ]
+        , [ MoveAxis Child , LaxElement "non_fiction" ]]
+        []])
 
 decodeFailedDecodeInsideChoice :: Assertion
 decodeFailedDecodeInsideChoice = do
@@ -135,10 +134,9 @@ decodeFailedDecodeInsideChoice = do
     "'This is not a dewey decimal' was not a double"
     , [ MoveAxis Child , LaxElement "book"
       , MoveAxis Child , LaxElement "section"
-      , ChoiceSwitch
-        [ MoveAxis Child , LaxElement "fiction" ]
-        [ ChoiceSucceed
-          [ MoveAxis Child , LaxElement "non_fiction" ]]])
+      , Choice
+        [ [ MoveAxis Child , LaxElement "fiction" ] ]
+        [ MoveAxis Child , LaxElement "non_fiction" ] ] )
 
 loadXmlForTest :: Text -> IO Document
 loadXmlForTest tn = readFile def . fromText $ "tests/xml/" <> tn <> ".xml"

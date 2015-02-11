@@ -23,7 +23,7 @@ module Text.XML.Decode.DecodeCursor
 import BasePrelude hiding (first)
 import Prelude     ()
 
-import           Control.Lens       (makeLenses, (^.))
+import           Control.Lens
 import           Data.Bifunctor     (first)
 import           Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NEL
@@ -106,15 +106,20 @@ choice :: Shift -> (HCursor -> DecodeResult a) -> ChoiceDecoder a
 choice = ChoiceDecoder
 
 decodeChoice :: [ChoiceDecoder a] -> HCursor -> DecodeResult a
-decodeChoice decoders (HCursor c h) =
-  first (\ (msg,bh) -> (msg,h ++ bh)) . step decoders $ HCursor c []
+decodeChoice cds (HCursor c h) =
+  withResHistory (h++)
+  . maybe noMatch doDecode
+  . find matched
+  $ shifted
   where
-    step []       hc = Left ("Failed to match choices",hc^.history)
-    step (cd:cds) hc = foldCursor aFail aWin (hc %/ (cd^.choiceDecoderShift))
-      where
-        aFail   ah = first (switchHistory ah) . step cds $ hc
-        aWin cs ah = cd^.choiceDecoderDecode $ (HCursor (NEL.toList cs) [ChoiceSucceed ah])
-        switchHistory ah (msg,bh) = (msg,[ChoiceSwitch ah bh])
+    noHistory = HCursor c []
+    shifted  = fmap (\cd -> (cd,noHistory %/ (cd^.choiceDecoderShift))) cds
+    matched  = successfulCursor . snd
+    unMatched = fmap (^._2.history) . filter (not . matched) $ shifted
+    noMatch  = Left ("Choices Exhausted",thisOp [])
+    doDecode (cd,bh) = withResHistory thisOp . (cd^.choiceDecoderDecode) $ bh
+    thisOp hh = [Choice unMatched hh]
+    withResHistory f = first (& over _2 f)
 
 parseCursor :: (Text -> Either Text a) -> HCursor -> DecodeResult a
 parseCursor f hc  = (first (,hc ^. history) . f . fold =<<) . cursorContents $ hc

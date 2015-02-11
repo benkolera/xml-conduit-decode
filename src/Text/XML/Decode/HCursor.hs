@@ -42,8 +42,8 @@ module Text.XML.Decode.HCursor
   , (&//)
   ) where
 
-import           BasePrelude        hiding (shift, (***), (>=>), (|||))
-import           Prelude            ()
+import BasePrelude hiding (shift, (***), (>=>), (|||))
+import Prelude     ()
 
 import           Control.Lens       (makeLenses, makePrisms, over, to, (&),
                                      (^.))
@@ -61,6 +61,7 @@ type CursorHistory = [CursorOp]
 data CursorOp =
   ChoiceSucceed CursorHistory
   | ChoiceSwitch { _failed :: CursorHistory , _new :: CursorHistory }
+  | Choice { _notMatched :: [CursorHistory] , _matched :: CursorHistory }
   | GenericOp Text
   | MoveAxis CursorAxis
   | LaxElement Text
