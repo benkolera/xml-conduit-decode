@@ -7,6 +7,7 @@ module Text.XML.Decode
   , DecodeResult
   , Predicate(..)
   , Shift
+  , ChoiceDecoder
   , decode
   , decodeDocument
   , decodeSingle
@@ -16,6 +17,8 @@ module Text.XML.Decode
   , decodeNel
   , decodeAttr
   , decodeAttrMay
+  , decodeChoice
+  , choice
   , foldCursor
   , HCursor
   , CursorOp(..)

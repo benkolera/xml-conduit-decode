@@ -14,6 +14,7 @@ module Text.XML.Decode.HCursor
   , tryCursor
   , failedCursor
   , successfulCursor
+  , withHistory
   -- Lenses / Prisms
   , cursors
   , history

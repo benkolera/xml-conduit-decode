@@ -1,8 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 {-# LANGUAGE TupleSections     #-}
 module Text.XML.Decode.DecodeCursor
   ( DecodeCursor
   , DecodeResult
+  , ChoiceDecoder
   , decode
   , decodeDocument
   , decodeSingle
@@ -11,6 +13,8 @@ module Text.XML.Decode.DecodeCursor
   , decodeMany
   , decodeNel
   , decodeAttr
+  , choice
+  , decodeChoice
   , decodeAttrMay
   , parseCursor
   , cursorContents
@@ -19,7 +23,7 @@ module Text.XML.Decode.DecodeCursor
 import           BasePrelude             hiding (first)
 import           Prelude                 ()
 
-import           Control.Lens            ((^.))
+import           Control.Lens            (makeLenses, (^.))
 import           Data.Bifunctor          (first)
 import           Data.List.NonEmpty      (NonEmpty (..))
 import qualified Data.List.NonEmpty      as NEL
@@ -93,25 +97,21 @@ decodeAttrMay n f = decodeAttr n parse
     parse t  = Just <$> f t
 
 data ChoiceDecoder a = ChoiceDecoder
-  { choiceDecoderShift  :: Shift
-  , choiceDecoderDecode :: (HCursor -> DecodeResult a)
+  { _choiceDecoderShift  :: Shift
+  , _choiceDecoderDecode :: (HCursor -> DecodeResult a)
   }
+makeLenses ''ChoiceDecoder
 
 choice :: Shift -> (HCursor -> DecodeResult a) -> ChoiceDecoder a
 choice = ChoiceDecoder
 
 decodeChoice :: [ChoiceDecoder a] -> HCursor -> DecodeResult a
-decodeChoice cds c =
-  -- TODO: This isn't right. We want to fold through the choices
-  -- and collect up ChoiceSwitches as we fail to match the initial
-  -- shift of the choice. ||| isn't going to help us, but we can do
-  -- something very similiar.
-  maybe noMatch doDecode . find choiceSuccess . fmap shiftChoice $ cds
+decodeChoice []       hc = Left ("Failed to match choices",hc^.history)
+decodeChoice (cd:cds) hc = foldCursor aFail aWin (hc %/ (cd^.choiceDecoderShift))
   where
-    shiftChoice cd      = (cd,c %/ (choiceDecoderShift cd))
-    choiceSuccess (_,c) = successfulCursor c
-    noMatch             = _
-    doDecode            = _
+    aFail   ah = first (switchHistory ah) . decodeChoice cds $ hc
+    aWin cs ah = cd^.choiceDecoderDecode $ (HCursor (NEL.toList cs) [ChoiceSucceed ah])
+    switchHistory ah (msg,bh) = (msg,[ChoiceSwitch ah bh])
 
 parseCursor :: (Text -> Either Text a) -> HCursor -> DecodeResult a
 parseCursor f hc  = (first (,hc ^. history) . f . fold =<<) . cursorContents $ hc

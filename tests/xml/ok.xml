@@ -1,6 +1,9 @@
 <library>
   <book id="1">
     <name>Learn you a haskell for great good!</name>
+    <section>
+      <non_fiction>5.1</non_fiction>
+    </section>
     <published>2011-04-21</published>
     <lastBorrowed>2015-01-05T16:30:00Z</lastBorrowed>
     <category>Programming</category>
@@ -9,6 +12,9 @@
   </book>
   <book id="2">
     <name>Enterprise Pragmatic Scala</name>
+    <section>
+      <fiction>K</fiction>
+    </section>
     <published>2013-05-01</published>
     <category>Programming</category>
     <category>Scala</category>

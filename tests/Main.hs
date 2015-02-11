@@ -32,9 +32,16 @@ bookCategoryFromText "Functional Programming" = Just FunctionalProgramming
 bookCategoryFromText _ = Nothing
 
 
+data LibrarySection
+  = Fiction Text       -- Fiction by author first letter(s)
+  | NonFiction Double  -- Dewey decimal number
+  deriving (Eq,Show)
+makePrisms ''LibrarySection
+
 data Book    = Book
   { _bookId           :: Integer
   , _bookName         :: Text
+  , _bookSection      :: LibrarySection
   , _bookPublished    :: Day
   , _bookLastBorrowed :: Maybe UTCTime
   , _bookCategories   :: [BookCategory]
@@ -49,10 +56,20 @@ makeLenses ''Library
 instance DecodeCursor BookCategory where
   decode = parseCursor (parseMaybe "BookCategory" bookCategoryFromText)
 
+instance DecodeCursor LibrarySection where
+  decode = decodeChoice
+    [ choice (laxElement "fiction") decodeFiction
+    , choice (laxElement "non_fiction") decodeNonFiction
+    ]
+    where
+      decodeFiction  c   = Fiction <$> parseCursor parseText c
+      decodeNonFiction c = NonFiction <$> parseCursor parseDouble c
+
 instance DecodeCursor Book where
   decode c = Book
     <$> decodeAttr    "id" parseInteger c
     <*> decodeSingle  (c %/ laxElement "name")
+    <*> decodeSingle  (c %/ laxElement "section")
     <*> (decodeSingle (c %/ laxElement "published") <&> toDay)
     <*> (decodeMay    (c %/ laxElement "lastBorrowed") <&> fmap toUtcT)
     <*> decodeMany    (c %/ laxElement "category")
@@ -71,12 +88,14 @@ decodeOk = do
       [ Book
         1
         "Learn you a haskell for great good!"
+        (NonFiction 5.1)
         (fromGregorian 2011 4 21)
         (Just (UTCTime (fromGregorian 2015 1 5) 59400))
         [Programming,Haskell,FunctionalProgramming]
       , Book
         2
         "Enterprise Pragmatic Scala"
+        (Fiction "K")
         (fromGregorian 2013 5 1)
         Nothing
         [Programming,Scala]
@@ -94,6 +113,47 @@ decodeBad = do
      , LaxElement "category"
     ])
 
+decodeBadChoice :: Assertion
+decodeBadChoice = do
+  c <- fromDocument <$> loadXmlForTest "bad_choice"
+  let r = (decodeSingle c :: DecodeResult Library)
+  r @?= Left (
+    "Failed to match choices"
+    , [ ChoiceSwitch
+      [ MoveAxis Child , LaxElement "book"
+      , MoveAxis Child , LaxElement "section"
+      , MoveAxis Child , LaxElement "fiction"
+      ]
+      [ ChoiceSwitch
+        [ MoveAxis Child , LaxElement "book"
+        , MoveAxis Child , LaxElement "section"
+        , MoveAxis Child , LaxElement "non_fiction"
+        ]
+        [ MoveAxis Child , LaxElement "book"
+        , MoveAxis Child , LaxElement "section"
+        ]
+      ]])
+
+-- I don't really like this. It'd be better if the switch was actually
+-- down at where it branched. OK enough for now, I guess.
+-- It'd be also nice if it weren't just a cons list.
+decodeFailedDecodeInsideChoice :: Assertion
+decodeFailedDecodeInsideChoice = do
+  c <- fromDocument <$> loadXmlForTest "bad_decode_inside_choice"
+  let r = (decodeSingle c :: DecodeResult Library)
+  r @?= Left (
+    "'This is not a dewey decimal' was not a double"
+    , [ ChoiceSwitch
+      [ MoveAxis Child , LaxElement "book"
+      , MoveAxis Child , LaxElement "section"
+      , MoveAxis Child , LaxElement "fiction"
+      ]
+      [ ChoiceSucceed
+        [ MoveAxis Child , LaxElement "book"
+        , MoveAxis Child , LaxElement "section"
+        , MoveAxis Child , LaxElement "non_fiction"
+        ]]])
+
 loadXmlForTest :: Text -> IO Document
 loadXmlForTest tn = readFile def . fromText $ "tests/xml/" <> tn <> ".xml"
 
@@ -101,6 +161,8 @@ tests :: TestTree
 tests = testGroup "DecodeTests"
   [ testCase "ok" decodeOk
   , testCase "bad" decodeBad
+  , testCase "bad_choice" decodeBadChoice
+  , testCase "bad_decode_inside_choice" decodeFailedDecodeInsideChoice
   ]
 
 main :: IO ()
