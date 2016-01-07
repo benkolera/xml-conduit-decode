@@ -20,19 +20,20 @@ module Text.XML.Decode.DecodeCursor
   , cursorContents
   ) where
 
-import BasePrelude hiding (first)
-import Prelude     ()
-
 import           Control.Lens
-import           Data.Bifunctor     (first)
-import           Data.List.NonEmpty (NonEmpty (..))
-import qualified Data.List.NonEmpty as NEL
-import           Data.Text          (Text)
-import qualified Data.Text          as T
-import           Text.XML           (Document)
-import qualified Text.XML.Cursor    as C
 
-import Text.XML.Decode.HCursor
+import           Data.Bifunctor          (first)
+import           Data.Foldable           (fold)
+import           Data.List               (find)
+import           Data.List.NonEmpty      (NonEmpty (..))
+import qualified Data.List.NonEmpty      as NEL
+import           Data.Maybe              (fromMaybe)
+import           Data.Text               (Text)
+import qualified Data.Text               as T
+import           Text.XML                (Document)
+import qualified Text.XML.Cursor         as C
+
+import           Text.XML.Decode.HCursor
 
 type DecodeResult a = Either (Text,CursorHistory) a
 

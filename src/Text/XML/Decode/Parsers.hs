@@ -9,15 +9,13 @@ module Text.XML.Decode.Parsers
  , parseXmlTime
  , parseIsoUtcTime
  , parseIsoDay
- )where
+ ) where
 
-import           BasePrelude          hiding (toLower)
-import           Prelude              ()
-
+import           Data.Foldable        (fold)
 import           Data.Text            (Text, toLower, unpack)
-import           Data.Time            (ParseTime, parseTime)
-import           System.Locale        (defaultTimeLocale)
+import           Data.Time            (ParseTime, defaultTimeLocale, parseTimeM)
 
+import           Text.Read            (readMaybe)
 import           Text.XML.Decode.Time
 
 parseText :: Text -> Either Text Text
@@ -45,7 +43,7 @@ parseBool = parseMaybe "a bool" parseBool' . toLower
 
 parseXmlTime :: ParseTime a => Text -> String -> Text -> Either Text a
 parseXmlTime desc format =
-  parseMaybe desc (parseTime defaultTimeLocale format . unpack)
+  parseMaybe desc (parseTimeM True defaultTimeLocale format . unpack)
 
 parseIsoUtcTime :: Text -> Either Text IsoUTCTime
 parseIsoUtcTime =
