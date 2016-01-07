@@ -1,8 +1,8 @@
 name:                xml-conduit-decode
 version:             0.1.0.2
-synopsis:            Support for historical cursors & decoding on top of xml-conduit. Created in the sprit of scalaz-xml.
--- description:
-homepage:            https://github.com/benkolera/xml-conduit-decode
+synopsis:            Support for historical cursors & decoding on top of xml-conduit.
+description:         Created in the sprit of scalaz-xml.
+homepage:            https://github.com/iseek/xml-conduit-decode
 license:             MIT
 license-file:        LICENSE
 author:              Ben Kolera
