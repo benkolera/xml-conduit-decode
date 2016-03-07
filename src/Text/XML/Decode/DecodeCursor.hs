@@ -20,13 +20,12 @@ module Text.XML.Decode.DecodeCursor
   , cursorContents
   ) where
 
-import BasePrelude hiding (first)
-import Prelude     ()
-
 import           Control.Lens
 import           Data.Bifunctor     (first)
+import           Data.Foldable      (find, fold)
 import           Data.List.NonEmpty (NonEmpty (..))
 import qualified Data.List.NonEmpty as NEL
+import           Data.Maybe         (fromMaybe)
 import           Data.Text          (Text)
 import qualified Data.Text          as T
 import           Text.XML           (Document)
@@ -98,7 +97,7 @@ decodeAttrMay n f = decodeAttr n parse
 
 data ChoiceDecoder a = ChoiceDecoder
   { _choiceDecoderShift  :: Shift
-  , _choiceDecoderDecode :: (HCursor -> DecodeResult a)
+  , _choiceDecoderDecode :: HCursor -> DecodeResult a
   }
 makeLenses ''ChoiceDecoder
 

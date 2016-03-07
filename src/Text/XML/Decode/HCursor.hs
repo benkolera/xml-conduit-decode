@@ -42,9 +42,6 @@ module Text.XML.Decode.HCursor
   , (&//)
   ) where
 
-import BasePrelude hiding (shift, (***), (>=>), (|||),(&))
-import Prelude     ()
-
 import           Control.Lens       (makeLenses, makePrisms, over, to, (&),
                                      (^.))
 import           Data.List.NonEmpty (NonEmpty (..))
