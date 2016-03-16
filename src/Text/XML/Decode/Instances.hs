@@ -1,9 +1,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 module Text.XML.Decode.Instances where
 
-import           BasePrelude
-import           Prelude                      ()
-
+import           Data.Foldable                (fold)
 import           Data.Text                    (Text)
 
 import           Text.XML.Decode.DecodeCursor
