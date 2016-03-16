@@ -9,13 +9,11 @@ import Control.Lens
 import Data.Default              (def)
 import Data.Text
 import Data.Time
-import Filesystem.Path.CurrentOS (fromText)
 import Test.Tasty
 import Test.Tasty.HUnit
 import Text.XML                  (Document, readFile)
 
 import Text.XML.Decode
-import Text.XML.Decode.Instances ()
 
 data BookCategory
   = Haskell
@@ -139,7 +137,7 @@ decodeFailedDecodeInsideChoice = do
         [ MoveAxis Child , LaxElement "non_fiction" ] ] )
 
 loadXmlForTest :: Text -> IO Document
-loadXmlForTest tn = readFile def . fromText $ "tests/xml/" <> tn <> ".xml"
+loadXmlForTest tn = readFile def . unpack $ "tests/xml/" <> tn <> ".xml"
 
 tests :: TestTree
 tests = testGroup "DecodeTests"

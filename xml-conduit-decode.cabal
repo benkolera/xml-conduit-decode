@@ -17,7 +17,6 @@ library
                      , Text.XML.Decode.Time
                      , Text.XML.Decode.DecodeCursor
                      , Text.XML.Decode.Parsers
-                     , Text.XML.Decode.Instances
   build-depends:       base                      >= 4.4     && < 5
                      , bifunctors                >= 5.2     && < 6
                      , lens                      >= 4.1     && < 5
@@ -37,7 +36,6 @@ test-suite test
                      , base-prelude
                      , data-default
                      , lens
-                     , system-filepath
                      , text
                      , tasty
                      , tasty-hunit
