@@ -9,13 +9,14 @@ module Text.XML.Decode.Parsers
  , parseXmlTime
  , parseIsoUtcTime
  , parseIsoDay
- )where
+ ) where
 
 import           Data.Foldable        (fold)
 import           Data.Text            (Text, toLower, unpack)
 import           Data.Time            (ParseTime, parseTimeM, defaultTimeLocale)
 import           Text.Read            (readMaybe)
 
+import           Text.Read            (readMaybe)
 import           Text.XML.Decode.Time
 
 parseText :: Text -> Either Text Text

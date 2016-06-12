@@ -21,17 +21,17 @@ module Text.XML.Decode.DecodeCursor
   ) where
 
 import           Control.Lens
-import           Data.Bifunctor     (first)
-import           Data.Foldable      (find, fold)
-import           Data.List.NonEmpty (NonEmpty (..))
-import qualified Data.List.NonEmpty as NEL
-import           Data.Maybe         (fromMaybe)
-import           Data.Text          (Text)
-import qualified Data.Text          as T
-import           Text.XML           (Document)
-import qualified Text.XML.Cursor    as C
+import           Data.Bifunctor          (first)
+import           Data.Foldable           (find, fold)
+import           Data.List.NonEmpty      (NonEmpty (..))
+import qualified Data.List.NonEmpty      as NEL
+import           Data.Maybe              (fromMaybe)
+import           Data.Text               (Text)
+import qualified Data.Text               as T
+import           Text.XML                (Document)
+import qualified Text.XML.Cursor         as C
 
-import Text.XML.Decode.HCursor
+import           Text.XML.Decode.HCursor
 
 type DecodeResult a = Either (Text,CursorHistory) a
 

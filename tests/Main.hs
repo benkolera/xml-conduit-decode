@@ -1,21 +1,29 @@
+{-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
 module Main where
 
-import BasePrelude hiding (readFile)
-import Prelude     ()
+import           Prelude                   (Double, Eq, IO, Integer, Show)
 
-import Control.Lens
-import Data.Default              (def)
-import Data.Text
-import Data.Time
-import Filesystem.Path.CurrentOS (fromText)
-import Test.Tasty
-import Test.Tasty.HUnit
-import Text.XML                  (Document, readFile)
+import           Control.Applicative       ((<$>), (<*>))
+import           Control.Category          ((.))
+import           Control.Lens
 
-import Text.XML.Decode
-import Text.XML.Decode.Instances ()
+import           Data.Default              (def)
+import           Data.Either               (Either (..))
+import           Data.Function             (($))
+import           Data.Functor              (fmap)
+import           Data.Maybe                (Maybe (..))
+import           Data.Monoid               ((<>))
+import           Data.Text
+import           Data.Time
+
+import           Test.Tasty
+import           Test.Tasty.HUnit
+import           Text.XML                  (Document, readFile)
+
+import           Text.XML.Decode
+import           Text.XML.Decode.Instances ()
 
 data BookCategory
   = Haskell
@@ -139,7 +147,7 @@ decodeFailedDecodeInsideChoice = do
         [ MoveAxis Child , LaxElement "non_fiction" ] ] )
 
 loadXmlForTest :: Text -> IO Document
-loadXmlForTest tn = readFile def . fromText $ "tests/xml/" <> tn <> ".xml"
+loadXmlForTest tn = readFile def . unpack $ "tests/xml/" <> tn <> ".xml"
 
 tests :: TestTree
 tests = testGroup "DecodeTests"
