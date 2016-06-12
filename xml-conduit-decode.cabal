@@ -1,5 +1,5 @@
 name:                xml-conduit-decode
-version:             0.2.0.0
+version:             0.3.0.0
 synopsis:            Support for historical cursors & decoding on top of xml-conduit. Created in the sprit of scalaz-xml.
 description:         Created in the sprit of scalaz-xml.
 homepage:            https://github.com/benkolera/xml-conduit-decode
@@ -17,7 +17,6 @@ library
                      , Text.XML.Decode.Time
                      , Text.XML.Decode.DecodeCursor
                      , Text.XML.Decode.Parsers
-                     , Text.XML.Decode.Instances
   build-depends:       base                      >= 4.4     && < 5
                      , bifunctors                >= 5.2     && < 6
                      , lens                      >= 4.1     && < 5
@@ -37,7 +36,6 @@ test-suite test
   build-depends:       base        >= 4.4 && < 5
                      , data-default
                      , lens
-                     , system-filepath
                      , text
                      , tasty
                      , tasty-hunit
