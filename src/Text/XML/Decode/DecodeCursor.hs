@@ -32,6 +32,8 @@ import           Text.XML           (Document)
 import qualified Text.XML.Cursor    as C
 
 import Text.XML.Decode.HCursor
+import Text.XML.Decode.Parsers
+import Text.XML.Decode.Time
 
 type DecodeResult a = Either (Text,CursorHistory) a
 
@@ -122,3 +124,11 @@ decodeChoice cds (HCursor c h) =
 
 parseCursor :: (Text -> Either Text a) -> HCursor -> DecodeResult a
 parseCursor f hc  = (first (,hc ^. history) . f . fold =<<) . cursorContents $ hc
+
+instance DecodeCursor Text where decode = fmap fold . cursorContents
+instance DecodeCursor Int where decode = parseCursor parseInt
+instance DecodeCursor Integer where decode = parseCursor parseInteger
+instance DecodeCursor Double where decode = parseCursor parseDouble
+instance DecodeCursor Bool where decode = parseCursor parseBool
+instance DecodeCursor IsoUTCTime where decode = parseCursor parseIsoUtcTime
+instance DecodeCursor IsoDay where decode = parseCursor parseIsoDay
