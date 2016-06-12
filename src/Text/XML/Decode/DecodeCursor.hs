@@ -31,6 +31,8 @@ import qualified Data.Text               as T
 import           Text.XML                (Document)
 import qualified Text.XML.Cursor         as C
 
+import           Text.XML.Decode.Parsers
+import           Text.XML.Decode.Time
 import           Text.XML.Decode.HCursor
 
 type DecodeResult a = Either (Text,CursorHistory) a

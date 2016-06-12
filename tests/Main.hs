@@ -23,7 +23,6 @@ import           Test.Tasty.HUnit
 import           Text.XML                  (Document, readFile)
 
 import           Text.XML.Decode
-import           Text.XML.Decode.Instances ()
 
 data BookCategory
   = Haskell
