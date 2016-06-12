@@ -1,6 +1,6 @@
 name:                xml-conduit-decode
-version:             0.3.0.0
-synopsis:            Support for historical cursors & decoding on top of xml-conduit. Created in the sprit of scalaz-xml.
+version:             1.0.0.0
+synopsis:            Historical cursors & decoding on top of xml-conduit.
 description:         Created in the sprit of scalaz-xml.
 homepage:            https://github.com/benkolera/xml-conduit-decode
 license:             MIT
@@ -10,6 +10,10 @@ maintainer:          ben.kolera@gmail.com
 category:            XML
 build-type:          Simple
 cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: git://git@github.com/benkolera/xml-conduit-decode.git
 
 library
   exposed-modules:     Text.XML.Decode

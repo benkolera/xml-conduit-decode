@@ -1,3 +1,15 @@
+{- |
+Module      :  Text.XML.Decode.Time
+Description :  Newtypes for Data.Time parsing
+Copyright   :  (c) Ben Kolera
+License     :  MIT
+
+Maintainer  :  Ben Kolera
+Stability   :  experimental
+
+Some newtypes that denote Days and UTCTimes to be parsed in ISO8601 format
+
+-}
 module Text.XML.Decode.Time
   ( IsoUTCTime(..)
   , IsoDay(..)

@@ -131,7 +131,8 @@ decodeBadChoice = do
       , Choice
         [ [ MoveAxis Child , LaxElement "fiction" ]
         , [ MoveAxis Child , LaxElement "non_fiction" ]]
-        []])
+        Nothing
+      ])
 
 decodeFailedDecodeInsideChoice :: Assertion
 decodeFailedDecodeInsideChoice = do
@@ -143,7 +144,8 @@ decodeFailedDecodeInsideChoice = do
       , MoveAxis Child , LaxElement "section"
       , Choice
         [ [ MoveAxis Child , LaxElement "fiction" ] ]
-        [ MoveAxis Child , LaxElement "non_fiction" ] ] )
+        (Just [ MoveAxis Child , LaxElement "non_fiction" ])
+      ])
 
 loadXmlForTest :: Text -> IO Document
 loadXmlForTest tn = readFile def . unpack $ "tests/xml/" <> tn <> ".xml"

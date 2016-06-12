@@ -1,4 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
+{- |
+Module      :  Text.XML.Decode.Parsers
+Description :  Helper functions from Text -> Either Text a
+Copyright   :  (c) Ben Kolera
+License     :  MIT
+
+Maintainer  :  Ben Kolera
+Stability   :  experimental
+
+-}
 module Text.XML.Decode.Parsers
  ( parseText
  , parseMaybe
