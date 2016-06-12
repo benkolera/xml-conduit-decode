@@ -1,5 +1,4 @@
 {-# LANGUAGE TemplateHaskell #-}
-
 module Text.XML.Decode.HCursor
   ( HCursor(..)
   , CursorOp(..)
